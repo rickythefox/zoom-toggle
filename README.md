@@ -39,7 +39,7 @@ Add one or both of these rules to `profiles[].complex_modifications.rules` in `~
     "manipulators": [
         {
             "type": "basic",
-            "from": { "key_code": "scroll_lock", "modifiers": { "optional": ["any"] } },
+            "from": { "key_code": "scroll_lock" },
             "to": [{ "shell_command": "/Users/YOU/.local/bin/zoom-toggle" }]
         }
     ]
