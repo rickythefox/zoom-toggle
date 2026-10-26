@@ -2,14 +2,39 @@
 
 Resets macOS Accessibility Zoom (full-screen) to 1× on every display that is zoomed in. Does nothing when no display is zoomed.
 
-## Build
+## Install
 
 ```sh
-./make-app.sh            # -> build/ZoomOut.app (windowless, quits immediately)
-open build/ZoomOut.app   # or bind it to a hotkey via Shortcuts/Raycast
+swift build -c release
+mkdir -p ~/.local/bin
+cp .build/release/ZoomOut ~/.local/bin/zoom-out
+zoom-out   # prints e.g. "display 2: 1.42x -> 1x", or "not zoomed in"
 ```
 
-The bare binary `.build/release/ZoomOut` works too and prints what it did. Exit codes: 0 means it worked or there was nothing to do; 1 means a display couldn't be listed, read, or reset (details on stderr); 2 means the API is missing.
+Exit codes: 0 means it worked or there was nothing to do; 1 means a display couldn't be listed, read, or reset (details on stderr); 2 means the API is missing. No Accessibility permission is needed.
+
+## Bind to a key with Karabiner-Elements
+
+Add this rule to `profiles[].complex_modifications.rules` in `~/.config/karabiner/karabiner.json`. Karabiner reloads the file automatically. Replace `YOU` with your username, since `shell_command` needs an absolute path.
+
+```json
+{
+    "description": "scroll_lock : zoom-out (reset Accessibility Zoom)",
+    "manipulators": [
+        {
+            "type": "basic",
+            "from": { "key_code": "scroll_lock", "modifiers": { "optional": ["any"] } },
+            "to": [{ "shell_command": "/Users/YOU/.local/bin/zoom-out" }]
+        }
+    ]
+}
+```
+
+Many Mac keyboards send Scroll Lock as `f14`. Check with Karabiner-EventViewer and change `key_code` if needed.
+
+## Optional: app bundle
+
+`./make-app.sh` builds `build/ZoomOut.app`, a windowless app that zooms out and quits. Use it from launchers that can only open apps: `open build/ZoomOut.app`.
 
 ## How it works
 
