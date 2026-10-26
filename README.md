@@ -29,7 +29,9 @@ Exit codes: 0 means it worked; 1 means a display couldn't be listed, read, or ch
 
 ## Bind to a key with Karabiner-Elements
 
-Add this rule to `profiles[].complex_modifications.rules` in `~/.config/karabiner/karabiner.json`. Karabiner reloads the file automatically. Replace `YOU` with your username, since `shell_command` needs an absolute path.
+Add one or both of these rules to `profiles[].complex_modifications.rules` in `~/.config/karabiner/karabiner.json`. Karabiner reloads the file automatically. Replace `YOU` with your username, since `shell_command` needs an absolute path.
+
+### Scroll Lock
 
 ```json
 {
@@ -45,6 +47,46 @@ Add this rule to `profiles[].complex_modifications.rules` in `~/.config/karabine
 ```
 
 Many Mac keyboards send Scroll Lock as `f14`. Check with Karabiner-EventViewer and change `key_code` if needed.
+
+### Double-tap Control
+
+Tap either Control key twice quickly. Ctrl+key and holding Ctrl work as normal. Each tap must be shorter than 250 ms and the second must follow within about 400 ms; tune these with the `parameters` values. The rule below covers `left_control`; copy both manipulators with `right_control` for the other key.
+
+```json
+{
+    "description": "double-tap control : zoom-out (toggle Accessibility Zoom)",
+    "manipulators": [
+        {
+            "type": "basic",
+            "conditions": [{ "type": "variable_if", "name": "zoom_out_ctrl_tapped", "value": 1 }],
+            "from": { "key_code": "left_control", "modifiers": { "optional": ["any"] } },
+            "to": [{ "key_code": "left_control" }],
+            "to_if_alone": [
+                { "set_variable": { "name": "zoom_out_ctrl_tapped", "value": 0 } },
+                { "shell_command": "/Users/YOU/.local/bin/zoom-out" }
+            ],
+            "parameters": {
+                "basic.to_if_alone_timeout_milliseconds": 250,
+                "basic.to_delayed_action_delay_milliseconds": 400
+            }
+        },
+        {
+            "type": "basic",
+            "from": { "key_code": "left_control", "modifiers": { "optional": ["any"] } },
+            "to": [{ "key_code": "left_control" }],
+            "to_if_alone": [{ "set_variable": { "name": "zoom_out_ctrl_tapped", "value": 1 } }],
+            "to_delayed_action": {
+                "to_if_invoked": [{ "set_variable": { "name": "zoom_out_ctrl_tapped", "value": 0 } }],
+                "to_if_canceled": [{ "set_variable": { "name": "zoom_out_ctrl_tapped", "value": 0 } }]
+            },
+            "parameters": {
+                "basic.to_if_alone_timeout_milliseconds": 250,
+                "basic.to_delayed_action_delay_milliseconds": 400
+            }
+        }
+    ]
+}
+```
 
 ## Optional: app bundle
 
