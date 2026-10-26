@@ -1,0 +1,36 @@
+name: release
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build universal binary
+        run: |
+          swift build -c release --arch arm64 --arch x86_64
+          bin="$(swift build -c release --arch arm64 --arch x86_64 --show-bin-path)/ZoomOut"
+          lipo -info "$bin"
+          mkdir -p dist
+          cp "$bin" dist/zoom-out
+          tar -C dist -czf zoom-out-macos-universal.tar.gz zoom-out
+          shasum -a 256 zoom-out-macos-universal.tar.gz > zoom-out-macos-universal.tar.gz.sha256
+
+      - name: Publish release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          tag="v1.0.${{ github.run_number }}"
+          gh release create "$tag" \
+            zoom-out-macos-universal.tar.gz \
+            zoom-out-macos-universal.tar.gz.sha256 \
+            --target "$GITHUB_SHA" \
+            --title "$tag" \
+            --generate-notes

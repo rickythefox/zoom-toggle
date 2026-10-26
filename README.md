@@ -2,7 +2,18 @@
 
 Resets macOS Accessibility Zoom (full-screen) to 1× on every display that is zoomed in. Does nothing when no display is zoomed.
 
-## Install
+## Download
+
+Every push to `main` publishes a universal (arm64 + x86_64) binary on the [releases page](https://github.com/rickythefox/zoom-out/releases/latest):
+
+```sh
+mkdir -p ~/.local/bin
+curl -fsSL https://github.com/rickythefox/zoom-out/releases/latest/download/zoom-out-macos-universal.tar.gz | tar -xz -C ~/.local/bin
+```
+
+`curl` doesn't add the quarantine flag. If you download with a browser instead, run `xattr -d com.apple.quarantine ~/.local/bin/zoom-out`.
+
+## Build from source
 
 ```sh
 swift build -c release
