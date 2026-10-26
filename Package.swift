@@ -2,9 +2,9 @@
 import PackageDescription
 
 let package = Package(
-    name: "ZoomOut",
+    name: "zoom-toggle",
     platforms: [.macOS(.v13)],
     targets: [
-        .executableTarget(name: "ZoomOut")
+        .executableTarget(name: "zoom-toggle")
     ]
 )

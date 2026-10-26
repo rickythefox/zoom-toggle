@@ -16,12 +16,12 @@ jobs:
       - name: Build universal binary
         run: |
           swift build -c release --arch arm64 --arch x86_64
-          bin="$(swift build -c release --arch arm64 --arch x86_64 --show-bin-path)/ZoomOut"
+          bin="$(swift build -c release --arch arm64 --arch x86_64 --show-bin-path)/zoom-toggle"
           lipo -info "$bin"
           mkdir -p dist
-          cp "$bin" dist/zoom-out
-          tar -C dist -czf zoom-out-macos-universal.tar.gz zoom-out
-          shasum -a 256 zoom-out-macos-universal.tar.gz > zoom-out-macos-universal.tar.gz.sha256
+          cp "$bin" dist/zoom-toggle
+          tar -C dist -czf zoom-toggle-macos-universal.tar.gz zoom-toggle
+          shasum -a 256 zoom-toggle-macos-universal.tar.gz > zoom-toggle-macos-universal.tar.gz.sha256
 
       - name: Publish release
         env:
@@ -29,8 +29,8 @@ jobs:
         run: |
           tag="v1.0.${{ github.run_number }}"
           gh release create "$tag" \
-            zoom-out-macos-universal.tar.gz \
-            zoom-out-macos-universal.tar.gz.sha256 \
+            zoom-toggle-macos-universal.tar.gz \
+            zoom-toggle-macos-universal.tar.gz.sha256 \
             --target "$GITHUB_SHA" \
             --title "$tag" \
             --generate-notes

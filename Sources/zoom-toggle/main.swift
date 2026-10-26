@@ -68,10 +68,10 @@ private struct ZoomError: Error, CustomStringConvertible {
     init(_ description: String) { self.description = description }
 }
 
-/// Scales saved at the last zoom-out, keyed by display ID.
+/// Scales saved at the last zoom out, keyed by display ID.
 private enum SavedScales {
     static let url = FileManager.default.homeDirectoryForCurrentUser
-        .appendingPathComponent(".local/state/zoom-out/scales.json")
+        .appendingPathComponent(".local/state/zoom-toggle/scales.json")
 
     static func load() -> [CGDirectDisplayID: Double] {
         guard let data = try? Data(contentsOf: url),
@@ -143,7 +143,7 @@ private func zoomIn(_ current: [(CGDirectDisplayID, Zoom)], with skyLight: SkyLi
 }
 
 guard let skyLight = SkyLightZoom() else {
-    fputs("zoom-out: SkyLight zoom API not found on this macOS version\n", stderr)
+    fputs("zoom-toggle: SkyLight zoom API not found on this macOS version\n", stderr)
     exit(2)
 }
 
@@ -156,6 +156,6 @@ do {
         try zoomOut(zoomed, with: skyLight)
     }
 } catch {
-    fputs("zoom-out: \(error)\n", stderr)
+    fputs("zoom-toggle: \(error)\n", stderr)
     exit(1)
 }
