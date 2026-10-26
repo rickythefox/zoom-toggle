@@ -1,4 +1,4 @@
-# ZoomOut
+# zoom-out
 
 Toggles macOS Accessibility Zoom (full-screen):
 
@@ -57,8 +57,10 @@ No synthetic keyboard or mouse events, and the zoom hotkeys don't need to be ena
 - `SLSGetZoomParametersForDisplay(cid, display, &centre, &scale, &smooth)` reads each display's zoom level. `centre` is the middle of the visible region in global display coordinates.
 - `SLSSetZoomParametersForDisplay(cid, display, &centre, smooth, 1, scale, 0)` sets it: scale 1.0 at the display centre to zoom out, or the saved scale at the pointer to zoom in.
 
+The zoom agent stays in sync both ways. After a toggle, Ctrl+scroll (or whatever zoom gesture you use) continues from the current level and doesn't jump.
+
 Caveats:
 
 - These are private APIs. The signatures come from the macOS 27 SkyLight code and can change in any macOS release.
-- `UAZoomEnabled()` (it reads `SLSIsZoomed`) keeps returning true after this reset. The app therefore checks the per-display scale instead.
+- `UAZoomEnabled()` (it reads `SLSIsZoomed`) keeps returning true after a zoom-out. The app therefore checks each display's scale instead.
 - `UAZoomSetScale` from UniversalAccess.framework does not work here. It only writes the `closeViewZoomFactor` preference and the agent does not apply it.
